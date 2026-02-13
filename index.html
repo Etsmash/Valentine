@@ -59,6 +59,35 @@
     button:active {
       transform: scale(0.97);
     }
+    #pinInput {
+      width: 100%;
+      margin: 10 auto;
+      margin-top: 10px;   
+      padding: 14px;
+      border-radius: 16px;
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      text-align: center;
+      background: rgba(255,255,255,0.95);
+      color: #C2185B;
+      font-weight: 600;
+      letter-spacing: 2px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      transition: all 0.2s ease;
+    }
+
+    #pinInput::placeholder {
+      color: #d16ba5;
+      font-weight: 400;
+      letter-spacing: normal;
+    }
+
+    #pinInput:focus {
+      transform: scale(1.02);
+      box-shadow: 0 0 0 3px rgba(247,37,133,0.4),
+              0 10px 25px rgba(0,0,0,0.2);
+    }
 
     .hidden {
       display: none;
@@ -66,6 +95,90 @@
 
     .shake {
       animation: shake 0.4s;
+    }
+    .hearts-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 99999;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -20px;
+      font-size: 20px;
+      animation: floatUp linear forwards;
+      opacity: 0.9;
+    }
+    .blurred #quizWrapper {
+      filter: blur(10px);
+      transform: scale(0.99);
+    }
+
+/* Overlay */
+    #overlay {
+      position: fixed;
+      inset: 0;
+      display: none;
+      place-items: center;
+      background: rgba(0,0,0,0.55);
+      z-index: 10000;
+      padding: 20px;
+    }
+
+    #overlay.show {
+      display: grid;
+    }
+
+    .overlay-card {
+      width: 100%;
+      max-width: 420px;
+      max-height: 90vh;          /* prevents overflow */
+      overflow-y: auto;          /* scroll if needed */
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 20px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      color: white;
+    }
+
+    .overlay-card h2 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+    }
+
+    .overlay-card p {
+      font-size: 0.95rem;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    /* Image inside overlay */
+    .overlay-gif {
+      width: 100%;
+      max-height: 220px;        /* prevents image overflow */
+      object-fit: cover;
+      border-radius: 14px;
+      margin: 10px 0 14px;
+      display: none;
+    }
+
+    /* Button inside overlay */
+    #overlayBtn {
+      width: 100%;
+      max-width: 260px;
+      margin: 0 auto;
+      padding: 14px;
+      border-radius: 14px;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 0.9; }
+      100% { transform: translateY(-110vh) scale(1.4); opacity: 0; }
     }
 
     @keyframes fadeIn {
@@ -83,12 +196,27 @@
   </style>
 </head>
 <body>
+<div class="hearts-container" id="hearts"></div>
+<div id="overlay" aria-hidden="true">
+  <div class="overlay-card">
+    <h2 id="overlayTitle">💘</h2>
+    <p id="overlayText">…</p>
+    <img id="overlayGif" class="overlay-gif" alt="reaction gif">
+    <button id="overlayBtn">Continue</button>
+  </div>
+</div>
 
 <div class="card" id="lockScreen">
   <h1>🔒 Not yet… Eager Beaver</h1>
-  <p>This quiz unlocks on <strong>14 Feb 2026 12:00pm</strong> 💘  Sydney Time</p>
+  <p id="lockMsg">This quiz unlocks on <strong>14 Feb 2026 12:00pm</strong> 💘  Sydney Time</p>
   <div id="countdown" style="font-size:1.1rem; font-weight:700; margin-top:10px;"></div>
-  <p style="opacity:.9; margin-top:12px;">(Sydney time)</p>
+   <div id="pinArea" class="hidden" style="margin-top:16px;">
+    <p style="margin-bottom:10px;">Enter the secret code 👀</p>
+    <input id="pinInput" inputmode="numeric" maxlength="6" placeholder="e.g. 0214"
+      style="width:100%; padding:14px; border-radius:12px; border: none; outline:none; font-size:1rem;" />
+    <button id="unlockBtn" style="margin-top:12px;">Unlock</button>
+    <p style="opacity:.85; margin-top:10px; font-size:0.9rem;">(Sydney time)</p>
+  </div>
 </div>
 
 
@@ -112,60 +240,213 @@
 <div class="card hidden" id="q1">
   <h1>Question 1</h1>
   <p>What is love?</p>
-  <button onclick="next('q1','q2')">A feeling</button>
-  <button onclick="next('q1','q2')">Idk I dont feel it</button>
-  <button onclick="next('q1','q2')">A strong bond</button>
-  <button onclick="next('q1','q2')">Love is many things</button>
+  <!-- wrong: reacts, stays -->
+  <button data-mode="gif"
+          data-title="Hmm...not quite 😌"
+          data-text="Love is more than just a feeling. Thats called infatuation haha"
+          data-gif="https://media1.giphy.com/media/v1.Y2lkPTZjMDliOTUyeDZld3d2NGk0bTk3NjB5emh2NDV0amdqMXMyanA3Y2wwcWJwOGlvdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/f9EmXxglhdhAj1bo28/200w.gif">
+    A feeling
+  </button>
+
+  <!-- wrong: blur roast, stays -->
+  <button data-mode="gif"
+          data-title="That hurt me 😢"
+          data-text="You are so mean. 😢"
+          data-gif="https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExMW5jcW0ya2theWYxYXVmYXQ4eXU2NW40ZmZ1Zmh6YWViYTZycjl3eiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/4zUmRD2x9vl06ltMXd/giphy.gif">
+    Idk I dont feel it
+  </button>
+
+  <!-- ✅ correct: reacts AND progresses -->
+  <button data-next="q2"
+          data-mode="text"
+          data-title="Ill let this one slide ✅"
+          data-text="Okay you can go now to the next question...">
+    A strong bond
+  </button>
+
+  <!-- wrong: reacts, stays -->
+  <button data-mode="text"
+          data-title="Cop out answer lowkey 😂"
+          data-text="So nope you are staying here.">
+    Love is many things
+  </button>
 </div>
 
 <div class="card hidden" id="q2">
   <h1>Question 2</h1>
-  <p>What is the main definition of Love in the bible?</p>
-  <button onclick="next('q2','q3')"> Idk I dont read</button>
-  <button onclick="next('q2','q3')"> Agape unconditional love from Jesus</button>
-  <button onclick="next('q2','q3')">There are many defintions</button>
-  <button onclick="next('q2','q3')">Why is this even a question</button>
+  <p>What is the main definition of Love from God in the bible?</p>
+
+  <button data-mode="gif"
+          data-title="😭 Read your Bible"
+          data-text="Caught u lacking Bible knowledge. READ MOREEEEE GOD WANTS U TO"
+          data-gif="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnNnaTR0ZWk3dzc2bTIyNDcxMmMyZmFqeXhhOXN6bGI0c2dtMjdqeiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Ac42Bnp0jwOTuFDpoa/giphy.gif">
+    Idk I dont read
+  </button>
+
+  <button data-next="q3"
+          data-mode="text"
+          data-title="Correct ✅"
+          data-text="Agape love. Thats the love Jesus showed when he died on the cross. Next question coming up...">
+    Agape unconditional love from Jesus
+  </button>
+
+  <button data-mode="text"
+          data-title="Nope hahahah"
+          data-text="I said definition of love from God. So read again. I will not take a copout answer like 'many definitions' when there is a clear one in the Bible 😂😂.">
+    There are many defintions
+  </button>
+
+  <button data-mode="gif"
+          data-title="Cause its valentine's day 😘"
+          data-text="It’s Valentine’s, and we are christians so its a question. So answer it. Dont be rudeee."
+          data-gif="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExajZsZXo0MmwycTgwcmltbG55NnN2b2hhZTltNjJrZWRnYzNjMXhlZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/f7qkttPHBZoOaloRkw/giphy.gif">
+    Why is this even a question
+  </button>
 </div>
 
 <div class="card hidden" id="q3">
   <h1>Question 3</h1>
   <p>What did we do last valentines</p>
-  <button onclick="next('q3','q4')"> Idk wasnt important</button>
-  <button onclick="next('q3','q4')"> JAPANESE BBQ at eastwood</button>
-  <button onclick="next('q3','q4')">JAPANESE BBQ at chatswood</button>
-  <button onclick="next('q3','q4')">Why you dont even know lol</button>
+
+  <button data-mode="blur"
+          data-title="Excuse me?? 😭"
+          data-text="Wasn’t important?? It was our first valentines together tho 🥺">
+    Idk wasnt important
+  </button>
+
+  <button data-next="q4"
+          data-mode="gif"
+          data-title="Correct 😌"
+          data-text="You remembered. That’s cute awhhhh. Next question coming up..."
+          data-gif="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjR6NXljamg3MnB2bGJtMWR6a25xNzVoc3o4NnJhMDl3NWp1a2JmdSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/m745dTCAxerHa/giphy.gif">
+    JAPANESE BBQ at chatswood
+  </button>
+
+  <button data-mode="text"
+          data-title="Close…"
+          data-text="No wrong place lol. Why would we go eastwood for japanese bbq lol 😂!!">
+    JAPANESE BBQ at eastwood
+  </button>
+
+  <button data-mode="text"
+          data-title="Rude 😭"
+          data-text="I definitely know lol. I made this quiz. And I defo remebered our first valentines together. 😂">
+    Why you dont even know lol
+  </button>
 </div>
+
 
 <div class="card hidden" id="q4">
   <h1>Question 4</h1>
   <p>What do you think I got you for valentines day</p>
-  <button onclick="next('q4','q5')"> Nothing you forgot</button>
-  <button onclick="next('q4','q5')"> Your heart ❤️</button>
-  <button onclick="next('q4','q5')"> A crepe machine 🥧😒</button>
-  <button onclick="next('q4','q5')"> Nothing cause u dont care about valentine day</button>
+
+  <button data-mode="blur"
+          data-title="Forget??"
+          data-text="WHATTTTT I DID NOT FORGET!! I got you something dont you worry! 😍">
+    Nothing you forgot
+  </button>
+
+  <button data-next="q5"
+          data-mode="text"
+          data-title="Correct 💘"
+          data-text="I give u my heart! but not my whole heart whole heart belongs to God!! 😂 Next question....">
+    Your heart ❤️
+  </button>
+
+  <button data-mode="gif"
+          data-title="HAHAHA"
+          data-text="No I did not get you a crepe machine. I know you dont want it. But funny guess😂 "
+          data-gif="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExd3B4ZmZndXM3Zmlqa211anltcXFyNDE2NmxqcTVoZGZseTZpemgxcSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/mbYjrvYGFnevK/giphy.gif">
+    A crepe machine 🥧😒
+  </button>
+
+  <button data-mode="text"
+          data-title="Noooo."
+          data-text="You know I do care. I made this for u☺️">
+    Nothing cause u dont care about valentine day
+  </button>
 </div>
+
 
 <div class="card hidden" id="q5">
   <h1>Question 5</h1>
   <p>Where do you think we are going for valentines day</p>
-  <button onclick="next('q5','q6')"> Hungry jacks</button>
-  <button onclick="next('q5','q6')"> Mcdonalds</button>
-  <button onclick="next('q5','q6')"> Blacktown</button>
-  <button onclick="next('q5','q6')"> Dont care I will eat anything😋</button>
+
+  <button data-mode="gif"
+          data-title="Hungry jacks??"
+          data-text="I know u dont like it. So no that would not be happening. But good guess😂."
+          data-gif="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZDY4bmp6cjJjNTR2c2IxcDJyOTY0dHNsZjBocnltMjJiaDdpa2NieiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/VFf98CMh5wndPYWvgt/giphy.gif">
+    Hungry jacks
+  </button>
+
+  <button data-mode="gif"
+          data-title="Maccas..."
+          data-text="Sadly we will not be going to the billion dollar restaruant and eating million dollar burgers from there. But good guess 😂."
+          data-gif="https://media.giphy.com/media/v5895Ah9IbB7MlHDrw/giphy.gif">
+    Mcdonalds
+  </button>
+
+  <button 
+          data-mode="gif"
+          data-title="Interesting 👀"
+          data-text="Might be.. might not be... but you will have to wait and seeee."
+          data-gif="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdGxqYzF5cTl5dG5rcWV0b2h2NjVkaXBueTJxcHpxaXpwbDF1bmlmdCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/H7rqZueJdOY6c2rG8k/giphy.gif">
+    Blacktown
+  </button>
+
+  <button 
+          data-next="q6"
+          data-mode="text"
+          data-title="Yes how did you know?? 😂"
+          data-text="Yeah damn I thought I could fool you. Next question coming up...">
+    None of these options are correct
+  </button>
+
+  <button data-mode="text"
+          data-title="You have to answer a specific one 😂"
+          data-text="Yeah I know ure a big back but please keep your answers to the other options given.">
+    Dont care I will eat anything😋
+  </button>
 </div>
+
 
 <div class="card hidden" id="q6">
   <h1>Question 6</h1>
-  <p>Solve this math equation: <br><br>
-Convert these numbers to letters starting from A=1, B=2, …, Z=26.
-<br><br>
-( √81 , 12 , 15 , √484 , 5 , 21 )
-</p>
-  <button onclick="next('q6','reveal')"> Bruh i aint solving this</button>
-  <button onclick="next('q6','reveal')"> Starting with an I ending in an E</button>
-  <button onclick="next('q6','reveal')"> Starting with an I ending in an o</button>
-  <button onclick="next('q6','reveal')"> I know what this is</button>
+  <p>
+    Solve this math equation:<br><br>
+    Convert these numbers to letters starting from A=1, B=2, …, Z=26.
+    <br><br>
+    ( √81 , 12 , 15 , √484 , 5 , 21 )
+  </p>
+
+  <button data-mode="blur"
+          data-title="Lazy 😭"
+          data-text="LOCK IN!! Or else im better than you at times table and math 😂">
+    Bruh i aint solving this
+  </button>
+
+  <button data-next="reveal"
+          data-mode="text"
+          data-title="Correct 💘"
+          data-text="You solved it. Genius!! Now your results await you in the next card...">
+    Starting with an I ending in an E
+  </button>
+
+  <button data-mode="text"
+          data-title="Might have made a mistake"
+          data-text="Hmmm seems u made an error somewhere. Try again !!"
+           >
+    Starting with an I ending in an o
+  </button>
+
+  <button data-mode="gif"
+          data-title="Confident 😏"
+          data-text="Let’s see if you’re right. Click the right answer!"
+          data-gif="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXcwN2l3YjludXczeDJsemU0dzNocTBkcDN0ZGtvYTMwbDJpY2UxNiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/7ovrKs1tz1MsrlbXjV/giphy.gif">
+    I know what this is
+  </button>
 </div>
+
 
 
 <!-- REVEAL -->
@@ -186,75 +467,184 @@ Convert these numbers to letters starting from A=1, B=2, …, Z=26.
 </div>
 
 <script>
-     // ---- Countdown / Lock logic (Sydney time) ----
+  // =========================
+  // SETTINGS
+  // =========================
+  const SECRET_CODE = "0510";
+
+  // 14 Feb 2026 12:00pm Sydney (AEDT, UTC+11) = 14 Feb 2026 01:00 UTC
+  const UNLOCK_UTC_MS = Date.now(); // (month is 0-based; 1 = Feb)
+
+  // =========================
+  // ELEMENTS
+  // =========================
   const lockScreen = document.getElementById("lockScreen");
   const quizWrapper = document.getElementById("quizWrapper");
   const countdownEl = document.getElementById("countdown");
+  const lockMsg = document.getElementById("lockMsg");
+  const pinArea = document.getElementById("pinArea");
+  const pinInput = document.getElementById("pinInput");
+  const unlockBtn = document.getElementById("unlockBtn");
+  const overlay = document.getElementById("overlay");
+  const overlayTitle = document.getElementById("overlayTitle");
+  const overlayText = document.getElementById("overlayText");
+  const overlayGif = document.getElementById("overlayGif");
+  const overlayBtn = document.getElementById("overlayBtn");
+  let pendingTo = null;
+  let pendingFrom = null;
 
-  // Unlock moment: 14 Feb 2026 00:00:00 in Australia/Sydney
-  const unlockISO = "2026-02-14T12:00:00";
-  const tz = "Australia/Sydney";
-
-  function getNowInTZ(timeZone) {
-    // Creates a Date representing "now", but converted to the target time zone
-    const now = new Date();
-    const parts = new Intl.DateTimeFormat("en-AU", {
-      timeZone,
-      year: "numeric", month: "2-digit", day: "2-digit",
-      hour: "2-digit", minute: "2-digit", second: "2-digit",
-      hour12: false
-    }).formatToParts(now);
-
-    const get = (type) => parts.find(p => p.type === type)?.value;
-    const y = get("year");
-    const m = get("month");
-    const d = get("day");
-    const hh = get("hour");
-    const mm = get("minute");
-    const ss = get("second");
-
-    // Build an ISO-like string in that time zone and parse as local Date
-    // (We only use it for difference math consistently in this script.)
-    return new Date(`${y}-${m}-${d}T${hh}:${mm}:${ss}`);
-  }
-
-  function getUnlockDateLocalEquivalent(timeZone, isoNoTZ) {
-    // Turn "2026-02-14T00:00:00" in Sydney time into a comparable Date object
-    // by constructing it as if it were "local", but comparing against now-in-TZ.
-    // This stays consistent with getNowInTZ().
-    return new Date(isoNoTZ);
-  }
-
-  const unlockDate = getUnlockDateLocalEquivalent(tz, unlockISO);
-
+  // =========================
+  // COUNTDOWN FORMAT
+  // =========================
   function formatCountdown(ms) {
     const totalSeconds = Math.max(0, Math.floor(ms / 1000));
     const days = Math.floor(totalSeconds / 86400);
     const hours = Math.floor((totalSeconds % 86400) / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
-
     const pad = (n) => String(n).padStart(2, "0");
     return `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
   }
 
-  function tick() {
-    const nowSydney = getNowInTZ(tz);
-    const diff = unlockDate - nowSydney;
-
-    if (diff <= 0) {
-      // Unlock
-      lockScreen.classList.add("hidden");
-      quizWrapper.classList.remove("hidden");
-      clearInterval(timer);
-      return;
-    }
-
-    countdownEl.textContent = `Unlocks in ${formatCountdown(diff)}`;
+  function showPin() {
+    countdownEl.style.display = "none";
+    lockMsg.innerHTML = "It’s Valentine’s Day 💘 Enter the secret code.";
+    pinArea.classList.remove("hidden");
+    pinInput.focus();
   }
 
-  tick();
+  function openQuiz() {
+    lockScreen.classList.add("hidden");
+    quizWrapper.classList.remove("hidden");
+    launchHearts();
+  }
+
+  function tick() {
+    const now = Date.now();
+    const diff = UNLOCK_UTC_MS - now;
+
+    if (diff > 0) {
+      countdownEl.textContent = `Unlocks in ${formatCountdown(diff)} (Sydney time)`;
+    } else {
+      clearInterval(timer);
+      showPin();
+    }
+  }
+  function launchHearts() {
+    const container = document.getElementById("hearts");
+    const heartSymbols = ["💗","💖","💘","💞","💓"];
+    for (let i = 0; i < 30; i++) {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.animationDuration = (3 + Math.random() * 3) + "s";
+      heart.style.fontSize = (16 + Math.random() * 20) + "px";
+      container.appendChild(heart);
+      setTimeout(() => heart.remove(), 6500);
+    }
+  }
+
   const timer = setInterval(tick, 1000);
+  tick();
+
+  // =========================
+  // PIN UNLOCK
+  // =========================
+  unlockBtn.addEventListener("click", () => {
+    const entered = (pinInput.value || "").trim();
+    if (entered === SECRET_CODE) {
+
+      openQuiz();
+    } else {
+      lockScreen.classList.add("shake");
+      setTimeout(() => lockScreen.classList.remove("shake"), 400);
+      pinInput.value = "";
+      pinInput.focus();
+    }
+  });
+
+  pinInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") unlockBtn.click();
+  });
+
+  //animation
+  function showOverlay({ title, text, gifUrl, blur }) {
+    overlayTitle.textContent = title || "💘";
+    overlayText.textContent = text || "";
+
+    if (gifUrl) {
+      overlayGif.src = gifUrl;
+      overlayGif.style.display = "block";
+    } else {
+      overlayGif.src = "";
+      overlayGif.style.display = "none";
+    }
+
+    document.body.classList.toggle("blurred", !!blur);
+    overlay.classList.add("show");
+  }
+
+  function hideOverlay() {
+    overlay.classList.remove("show");
+    document.body.classList.remove("blurred");
+  }
+
+  overlayBtn.addEventListener("click", () => {
+    hideOverlay();
+
+    // ✅ Only advance if a next card was set (i.e., correct answer)
+    if (pendingFrom && pendingTo) {
+      document.getElementById(pendingFrom).classList.add("hidden");
+      document.getElementById(pendingTo).classList.remove("hidden");
+    }
+
+    pendingFrom = null;
+    pendingTo = null;
+  });
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if (!btn) return;
+
+    // Only handle quiz answer buttons (ones that have data-mode/title/text/gif/next)
+    const hasOverlayData =
+      btn.hasAttribute("data-mode") ||
+      btn.hasAttribute("data-title") ||
+      btn.hasAttribute("data-text") ||
+      btn.hasAttribute("data-gif") ||
+      btn.hasAttribute("data-next");
+
+    if (!hasOverlayData) return;
+
+    const fromCard = btn.closest(".card")?.id;
+    const toCard = btn.getAttribute("data-next"); // will be null for wrong answers
+
+    const mode = btn.getAttribute("data-mode") || "text";
+    const title = btn.getAttribute("data-title") || "💘";
+    const text = btn.getAttribute("data-text") || "";
+    const gifUrl = btn.getAttribute("data-gif") || "";
+
+  // Shake the current card for feedback
+  if (fromCard) {
+    const card = document.getElementById(fromCard);
+    card.classList.add("shake");
+    setTimeout(() => card.classList.remove("shake"), 400);
+  }
+
+  pendingFrom = fromCard || null;
+  pendingTo = toCard || null; // if null → stays on same question
+
+  showOverlay({
+    title,
+    text,
+    gifUrl: mode === "gif" ? gifUrl : "",
+    blur: mode === "blur"
+  });
+});
+
+
+
   function goTo(id) {
     document.getElementById("intro").classList.add("hidden");
     document.getElementById(id).classList.remove("hidden");
