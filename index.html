@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>One Question</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at top, #ff257e, #ffc5e6);
+      color: #e5e7eb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .card {
+      background: #C2185B;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 28px;
+      border-radius: 18px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
+      text-align: center;
+      animation: fadeIn 0.6s ease;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      color: #f4f5f8;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: #f4f5f8;
+      margin-bottom: 18px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 14px;
+      background: linear-gradient(135deg, #B5179E, #F72585);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+      box-shadow: 0 10px 20px rgba(247,37,133,0.4);
+
+    }
+
+    button:active {
+      transform: scale(0.97);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-6px); }
+      50% { transform: translateX(6px); }
+      75% { transform: translateX(-6px); }
+      100% { transform: translateX(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="lockScreen">
+  <h1>🔒 Not yet… Eager Beaver</h1>
+  <p>This quiz unlocks on <strong>14 Feb 2026 12:00pm</strong> 💘  Sydney Time</p>
+  <div id="countdown" style="font-size:1.1rem; font-weight:700; margin-top:10px;"></div>
+  <p style="opacity:.9; margin-top:12px;">(Sydney time)</p>
+</div>
+
+
+<div id="quizWrapper" class="hidden">
+  
+
+<div class="card" id="intro">
+  <h1>Welcome to Valentines Day 2026  😍</h1>
+  <p>
+    This is a <strong>special quiz</strong> about love, what is it to people and what is it to you.<br>
+    Completing this quiz will show you your number one love language!!<br>
+    And maybe an <strong>answer</strong> you are seeking?💘<br>
+    <br>
+    <strong>Click</strong> below to get started....
+    
+  </p>
+  <button onclick="goTo('q1')">Next</button>
+</div>
+
+
+<div class="card hidden" id="q1">
+  <h1>Question 1</h1>
+  <p>What is love?</p>
+  <button onclick="next('q1','q2')">A feeling</button>
+  <button onclick="next('q1','q2')">Idk I dont feel it</button>
+  <button onclick="next('q1','q2')">A strong bond</button>
+  <button onclick="next('q1','q2')">Love is many things</button>
+</div>
+
+<div class="card hidden" id="q2">
+  <h1>Question 2</h1>
+  <p>What is the main definition of Love in the bible?</p>
+  <button onclick="next('q2','q3')"> Idk I dont read</button>
+  <button onclick="next('q2','q3')"> Agape unconditional love from Jesus</button>
+  <button onclick="next('q2','q3')">There are many defintions</button>
+  <button onclick="next('q2','q3')">Why is this even a question</button>
+</div>
+
+<div class="card hidden" id="q3">
+  <h1>Question 3</h1>
+  <p>What did we do last valentines</p>
+  <button onclick="next('q3','q4')"> Idk wasnt important</button>
+  <button onclick="next('q3','q4')"> JAPANESE BBQ at eastwood</button>
+  <button onclick="next('q3','q4')">JAPANESE BBQ at chatswood</button>
+  <button onclick="next('q3','q4')">Why you dont even know lol</button>
+</div>
+
+<div class="card hidden" id="q4">
+  <h1>Question 4</h1>
+  <p>What do you think I got you for valentines day</p>
+  <button onclick="next('q4','q5')"> Nothing you forgot</button>
+  <button onclick="next('q4','q5')"> Your heart ❤️</button>
+  <button onclick="next('q4','q5')"> A crepe machine 🥧😒</button>
+  <button onclick="next('q4','q5')"> Nothing cause u dont care about valentine day</button>
+</div>
+
+<div class="card hidden" id="q5">
+  <h1>Question 5</h1>
+  <p>Where do you think we are going for valentines day</p>
+  <button onclick="next('q5','q6')"> Hungry jacks</button>
+  <button onclick="next('q5','q6')"> Mcdonalds</button>
+  <button onclick="next('q5','q6')"> Blacktown</button>
+  <button onclick="next('q5','q6')"> Dont care I will eat anything😋</button>
+</div>
+
+<div class="card hidden" id="q6">
+  <h1>Question 6</h1>
+  <p>Solve this math equation: <br><br>
+Convert these numbers to letters starting from A=1, B=2, …, Z=26.
+<br><br>
+( √81 , 12 , 15 , √484 , 5 , 21 )
+</p>
+  <button onclick="next('q6','reveal')"> Bruh i aint solving this</button>
+  <button onclick="next('q6','reveal')"> Starting with an I ending in an E</button>
+  <button onclick="next('q6','reveal')"> Starting with an I ending in an o</button>
+  <button onclick="next('q6','reveal')"> I know what this is</button>
+</div>
+
+
+<!-- REVEAL -->
+<div class="card hidden" id="reveal">
+  <h1>✨ Tonight ✨</h1>
+  <p>
+    🍽️ Dinner at <strong>Elements Smokehouse</strong> — 7:30pm<br><br>
+    👗 Wear something nice but fits under Casual Dressing<br><br>
+    🌌 A quiet lookout after / walk<br><br>
+    🕰️ Home by 11
+  </p>
+  <p style="margin-top:16px;">No rush. Just us.
+    <br><br>
+    And from the way you answered the questions, I can tell you that... you need to learn how to do a pull up 😝😝😝
+  </p>
+</div>
+
+</div>
+
+<script>
+     // ---- Countdown / Lock logic (Sydney time) ----
+  const lockScreen = document.getElementById("lockScreen");
+  const quizWrapper = document.getElementById("quizWrapper");
+  const countdownEl = document.getElementById("countdown");
+
+  // Unlock moment: 14 Feb 2026 00:00:00 in Australia/Sydney
+  const unlockISO = "2026-02-14T12:00:00";
+  const tz = "Australia/Sydney";
+
+  function getNowInTZ(timeZone) {
+    // Creates a Date representing "now", but converted to the target time zone
+    const now = new Date();
+    const parts = new Intl.DateTimeFormat("en-AU", {
+      timeZone,
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", second: "2-digit",
+      hour12: false
+    }).formatToParts(now);
+
+    const get = (type) => parts.find(p => p.type === type)?.value;
+    const y = get("year");
+    const m = get("month");
+    const d = get("day");
+    const hh = get("hour");
+    const mm = get("minute");
+    const ss = get("second");
+
+    // Build an ISO-like string in that time zone and parse as local Date
+    // (We only use it for difference math consistently in this script.)
+    return new Date(`${y}-${m}-${d}T${hh}:${mm}:${ss}`);
+  }
+
+  function getUnlockDateLocalEquivalent(timeZone, isoNoTZ) {
+    // Turn "2026-02-14T00:00:00" in Sydney time into a comparable Date object
+    // by constructing it as if it were "local", but comparing against now-in-TZ.
+    // This stays consistent with getNowInTZ().
+    return new Date(isoNoTZ);
+  }
+
+  const unlockDate = getUnlockDateLocalEquivalent(tz, unlockISO);
+
+  function formatCountdown(ms) {
+    const totalSeconds = Math.max(0, Math.floor(ms / 1000));
+    const days = Math.floor(totalSeconds / 86400);
+    const hours = Math.floor((totalSeconds % 86400) / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    const pad = (n) => String(n).padStart(2, "0");
+    return `${days}d ${pad(hours)}h ${pad(minutes)}m ${pad(seconds)}s`;
+  }
+
+  function tick() {
+    const nowSydney = getNowInTZ(tz);
+    const diff = unlockDate - nowSydney;
+
+    if (diff <= 0) {
+      // Unlock
+      lockScreen.classList.add("hidden");
+      quizWrapper.classList.remove("hidden");
+      clearInterval(timer);
+      return;
+    }
+
+    countdownEl.textContent = `Unlocks in ${formatCountdown(diff)}`;
+  }
+
+  tick();
+  const timer = setInterval(tick, 1000);
+  function goTo(id) {
+    document.getElementById("intro").classList.add("hidden");
+    document.getElementById(id).classList.remove("hidden");
+  }
+
+  function next(from, to) {
+    const card = document.getElementById(from);
+    card.classList.add("shake");
+
+    setTimeout(() => {
+      card.classList.remove("shake");
+      card.classList.add("hidden");
+      document.getElementById(to).classList.remove("hidden");
+    }, 400);
+  }
+</script>
+
+</body>
+</html>
